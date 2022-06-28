@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -
+"""
+1.深度合并dict
+"""
+
+def merge_dict(source_dict, update_dict):
+    # 遍历需要更新的字典
+    for key in update_dict.keys():
+        # 该key不在字典中追加
+        if key not in source_dict.keys():
+            source_dict[key] = update_dict[key]
+        else:
+            # 存在，根据类型更新
+            # 字典类型，再判断
+            if isinstance(update_dict[key], dict):
+                merge_dict(source_dict[key], update_dict[key])
+            # 非字典类型，进行更新
+            else:
+                source_dict[key] = update_dict[key]
+
+    return source_dict
+
+
+source_dict = {
+    'key0': 'a',
+    'key1': 'b',
+    'key2': {
+        'inner_key0': 'c',
+        'inner_key1': 'd'
+    }
+}
+update_dict = {
+    'key1': 'x',
+    'key2': {
+        'inner_key0': 'y'
+    }
+}
+result = merge_dict(source_dict, update_dict)
+print (result, "================result")
+
+
+
+"""
+2.电话组合排列
+"""
+
+# 字母数字组合
+key_dict = {
+    '2': 'abc',
+    '3': 'def',
+    '4': 'ghi',
+    '5': 'jkl',
+    '6': 'mno',
+    '7': 'pqrs',
+    '8': 'tuv',
+    '9': 'wxyz'
+}
+
+
+def letter_com(number_str):
+    # 传入值为空
+    if not number_str or len(number_str) == 0:
+        return []
+    res = []
+    # 长度为1,一个组合
+    if len(number_str) == 1:
+        return key_dict[number_str]
+    # 组合调用
+    restult = letter_com(number_str[1:])
+    for i in restult:
+        # 组合
+        for j in key_dict[number_str[0]]:
+            res.append((j + i))
+    return res
+
+print(letter_com('23'))
+
+
+
+
+
+
+
+
+
+
+
+"""
+3.内存泄露
+"""
+
+内存泄漏的含义:内存泄漏是指程序中己动态分配的堆内存由于某种原因程序未释放或无法释放，造成系统内存的浪费，导致程序运行速度减慢甚至系统崩溃等严重后果。
+
+import time
+
+key_dict = {}
+def test():
+    for i in range(10):
+        key_dict[i] = int(time.time())
+    return key_dict
+test()
+
+代码中用到了全局的dict,不停的往容器中插入对象，在使用完未进行删除回收，导致内存泄漏
+
